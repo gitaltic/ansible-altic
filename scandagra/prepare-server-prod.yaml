@@ -32,6 +32,7 @@
       ansible.builtin.command:
         apt install /tmp/wkhtmltox_0.12.6.1-2.bullseye_amd64.deb -y
 
-    - name: DOWNLOAD agrosmart.zip
-      ansible.builtin.command:
-        wget -nc --no-check-certificate "https://dl.oce.art21.lt/agrosmart.zip" -P /tmp
+    - name: UPLOAD FILE agrosmart.zip TO SERVER AND EXTRACT
+      ansible.builtin.unarchive:
+        src: files/agrosmart.zip
+        dest: /home/webuser
