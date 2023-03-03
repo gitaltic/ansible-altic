@@ -8,29 +8,30 @@
       ansible.builtin.include_tasks:
         file: tasks/add-source.yaml
 
-    - name: INSTALL ALL PACKAGES
+    - name: INSTALL ALL PACKAGES WITH APT
       ansible.builtin.apt:
         name: "{{ item }}"
         update_cache: true
       loop: "{{ applist }}"
 
-    - name: ENABLE APACHE MODS
+    - name: ENABLE Apache MODS
       community.general.apache2_module:
         state: present
         name: "{{ item }}"
       loop: "{{ enablemods }}"
 
-    - name: Install MySQL server
+    - name: INSTALL MySQL SERVER
       ansible.builtin.include_tasks:
         file: tasks/install-mysql.yaml
 
-    - name: Downdload wkhtmltox
+    - name: DOWNLOAD wkhtmltox
       ansible.builtin.command:
         wget -nc "https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.bullseye_amd64.deb" -P /tmp
+
     - name : Install
       ansible.builtin.command:
         apt install /tmp/wkhtmltox_0.12.6.1-2.bullseye_amd64.deb -y
 
-    - name: Downdload agrosmart.zip
+    - name: DOWNLOAD agrosmart.zip
       ansible.builtin.command:
         wget -nc --no-check-certificate "https://dl.oce.art21.lt/agrosmart.zip" -P /tmp
