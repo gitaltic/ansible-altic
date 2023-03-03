@@ -1,0 +1,20 @@
+applist:
+  - acl
+  - zip
+  - unzip
+  - git
+  - apache2
+  - samba
+  - smbclient
+  - cifs-utils
+  - libncursesw5
+  - libaio1
+  - apt-transport-https
+  - lsb-release
+  - ca-certificates
+  - php5.6
+  - php5.6-cli
+enablemods:
+  - rewrite
+  - env
+  - php5

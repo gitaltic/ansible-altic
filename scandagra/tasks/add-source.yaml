@@ -1,0 +1,10 @@
+---
+    - name: Install curl
+      ansible.builtin.apt:
+        name: curl
+    - name: ADD PHP repository
+      ansible.builtin.command:
+        curl -ssL -o /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+    - name: ADD TO SOURCES
+      ansible.builtin.command:
+        sh -c 'echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list'

@@ -1,0 +1,51 @@
+---
+- name: WGET INSTALL
+  ansible.builtin.command: 
+    wget -nc "https://downloads.mysql.com/archives/get/p/23/file/mysql-5.5.62-linux-glibc2.12-x86_64.tar.gz" -P /tmp
+- name: CREATE FOLDER
+  ansible.builtin.file:
+    path: /usr/local/mysql
+    state: directory
+- name: UNARCHIVE
+  ansible.builtin.unarchive:
+    src: /tmp/mysql-5.5.62-linux-glibc2.12-x86_64.tar.gz
+    dest: /usr/local/mysql
+    remote_src: true
+    extra_opts: [--strip-components=1]
+- name: CREATE GROUP
+  ansible.builtin.group:
+    name: mysql
+    state: present
+- name: CREATE USER
+  ansible.builtin.user:
+    name: mysql
+    state: present
+    group: mysql
+- name: Check if Service Exists
+  stat: path=/etc/init.d/mysql.server
+  register: service_status
+- name: Init mysql db
+  ansible.builtin.shell: |
+      export PATH=$PATH:/usr/sbin
+      echo "mysql service not exist proceed to install"
+      cd /usr/local/mysql
+      chown -R mysql:mysql *
+      scripts/mysql_install_db --user=mysql
+      ./bin/mysql_secure_installation
+      chown -R root .
+      chown -R mysql data 
+      cp support-files/my-medium.cnf /etc/my.cnf 
+      #bin/mysqld_safe --user=mysql
+      cp support-files/mysql.server /etc/init.d/mysql.server
+      #bin/mysqladmin -u root password 'pswd'
+      update-rc.d -f mysql.server defaults  
+      ln -s /usr/local/mysql/bin/mysql /usr/local/bin/mysql
+  when: service_status.stat.exists == false
+  args:
+    executable: /bin/bash
+  register: sqllog
+- debug: var=sqllog.stdout_lines
+- name: Start mysql
+  ansible.builtin.service: 
+    name: mysql
+    state: started
