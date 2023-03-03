@@ -5,7 +5,6 @@
   vars:
     applist:
       - acl
-      - curl
       - zip
       - unzip
       - git
@@ -76,6 +75,7 @@
         cd /usr/local/mysql
         chown -R mysql:mysql *
         scripts/mysql_install_db --user=mysql
+        ./bin/mysql_secure_installation
         chown -R root .
         chown -R mysql data 
         cp support-files/my-medium.cnf /etc/my.cnf 
@@ -88,9 +88,17 @@
     args:
       executable: /bin/bash
     register: sqllog
-
   - debug: var=sqllog.stdout_lines
   - name: Retart mysql
     ansible.builtin.service: 
       name: mysql
       state: started
+  - name: Downdload wkhtmltox
+    ansible.builtin.command:
+      wget -nc "https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.bullseye_amd64.deb" -P /tmp
+  - name : Install
+    ansible.builtin.apt:
+      deb: /tmp/wkhtmltox_0.12.6.1-2.bullseye_amd64.deb
+  - name: Downdload agrosmart.zip
+    ansible.builtin.command:
+      wget -nc "https://dl.oce.art21.lt/agrosmart.zip" -P /tmp
