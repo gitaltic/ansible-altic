@@ -31,7 +31,7 @@
       cd /usr/local/mysql
       chown -R mysql:mysql *
       scripts/mysql_install_db --user=mysql
-      ./bin/mysql_secure_installation
+      #./bin/mysql_secure_installation
       chown -R root .
       chown -R mysql data 
       cp support-files/my-medium.cnf /etc/my.cnf 
